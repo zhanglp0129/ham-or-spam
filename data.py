@@ -81,7 +81,7 @@ class HamSpamDataset(Dataset):
                 content = line[line.index(',')+1 : ]
                 self.sentences.append(content)
                 self.labels.append(conf.ham if label == 'ham' else conf.spam)
-        self.train_len = int(0.8*len(self.labels))
+        self.train_len = int(0.85*len(self.labels))
         self.eval_len = len(self.labels) - self.train_len
 
     def __len__(self):

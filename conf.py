@@ -1,7 +1,7 @@
 import torch
 
 batch_size = 128
-epochs = 50
+epochs = 10
 learning_rate = 0.001
 hidden_size = 256
 num_layers = 2

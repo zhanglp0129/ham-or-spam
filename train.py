@@ -2,7 +2,6 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from torch import nn, optim
-import matplotlib.pyplot as plt
 import conf
 import data
 import models
@@ -12,9 +11,10 @@ def train(model:nn.Module, optimizer:optim.Optimizer, criterion):
     acc_list = []
     for i in range(conf.epochs):
         # 训练模型
-        model.train()
         dataloader = data.getDataloader(True)
-        for inputs, labels in dataloader:
+        size = len(dataloader)
+        for idx, (inputs, labels) in enumerate(dataloader):
+            model.train()
             inputs = inputs.to(conf.device)
             labels = labels.to(conf.device)
             optimizer.zero_grad()
@@ -23,12 +23,13 @@ def train(model:nn.Module, optimizer:optim.Optimizer, criterion):
             loss.backward()
             optimizer.step()
 
-        # 评估模型
-        eval_loss, eval_acc = eval(model, criterion)
-        loss_list.append(eval_loss)
-        acc_list.append(eval_acc)
-        print(f"{i+1}/{conf.epochs}，损失：{eval_loss}，正确率：{eval_acc}")
-        torch.save(model.state_dict(), conf.model_save_path)
+            if idx % (size // 10) == 0:
+                # 评估模型
+                eval_loss, eval_acc = eval(model, criterion)
+                loss_list.append(eval_loss)
+                acc_list.append(eval_acc)
+                print(f"{i+1}/{conf.epochs}，损失：{eval_loss}，正确率：{eval_acc}")
+                torch.save(model.state_dict(), conf.model_save_path)
     return loss_list, acc_list
 
 
@@ -56,7 +57,7 @@ def eval(model:nn.Module, criterion)->(float, float):
 if __name__ == "__main__":
     model = models.HamSpamModel()
     model = model.to(conf.device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = optim.Adam(model.parameters(), lr=conf.learning_rate)
     criterion = nn.BCELoss()
     loss, acc = train(model, optimizer, criterion)
     print(loss)
