@@ -12,9 +12,6 @@ dropout = 0.5
 ham = 0
 spam = 1
 
-mean = 645.2935959181727
-std = 884.3463761591171
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # 模型保存路径
