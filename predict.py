@@ -23,4 +23,5 @@ if __name__ == "__main__":
         for line in lines:
             if line[-1] == '\n' or line[-1] == '\r':
                 line = line[:-1]
-            print(line,predict(model,line))
+            if predict(model, line) == 'spam':
+                print(line)
